@@ -1,3 +1,6 @@
+from collections import OrderedDict
+
+
 class Schema:
     def __init__(self, tables=None):
         self.tables = list(tables) if tables is not None else []
@@ -19,7 +22,7 @@ class Table:
     def __init__(self, table_name, columns=None):
         self.tableName = table_name
         self._columns = list(columns) if columns is not None else []
-        self.column_map = {a.name: a for a in self._columns}
+        self.column_map = OrderedDict((a.name, a) for a in self._columns)
 
     def __repr__(self):
         return self.tableName + " table"
@@ -42,16 +45,17 @@ class Table:
 
 
 class Column:
-    def __init__(self, name, data_type, key=False, reference=None):
+    def __init__(self, name, data_type, key=False, reference=None, rows=None):
         self.name = name
-        self.dataType = data_type
+        self.data_type = data_type
         self.key = key
         self.reference = reference
+        self.rows = list(rows) if rows is not None else []
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
             return self.name == other.name \
-                   and self.dataType == other.dataType \
+                   and self.data_type == other.data_type \
                    and self.key == other.key \
                    and self.reference == other.reference
         elif isinstance(other, ''.__class__):
@@ -63,9 +67,17 @@ class Column:
 
     def __repr__(self):
         return self.name \
-               + " is of type " + self.dataType \
+               + " is of type " + str(self.data_type) \
                + ". Key status: " + str(self.key) \
                + ". References: " + str(self.reference)
 
     def __str__(self):
         return self.__str__()
+
+    def append(self, row):
+        return self.rows.append(row)
+
+
+class Row:
+    def __init__(self, data):
+        self.data = list(data)

@@ -1,9 +1,11 @@
 from dbGen import graph as g
+from dbGen import data_generator as dg
+from dbGen import types as t
 
-companies = g.Table("companies", [g.Column("id", "integer", True), g.Column("name", "String")])
+companies = g.Table("companies", [g.Column("id", t.DataListIntType(1), True), g.Column("name", t.DataStringType())])
 print(companies.column_map)
 
-movies = g.Table("Movies")
+movies = g.Table("movies")
 c1 = g.Column("id", "integer", True)
 c2 = g.Column("name", "String")
 
@@ -21,3 +23,5 @@ schema = g.Schema([movies, companies])
 
 print(schema)
 print(schema.get_independent_tables())
+
+print(dg.generate(companies))
