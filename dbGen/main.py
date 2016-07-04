@@ -24,5 +24,5 @@ schema = g.Schema([movies, companies])
 print(schema)
 print(schema.get_independent_tables())
 
-(dg.generate(companies))
-
+companies.add_data(dg.generate(companies))
+companies.print_data()

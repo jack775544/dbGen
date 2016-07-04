@@ -30,15 +30,38 @@ class Table:
     def __str__(self):
         return self.__repr__()
 
+    def column_count(self):
+        return len(self.column_map)
+
+    def print_data(self):
+        """
+        Prints the data stored in the table
+        """
+        if self.column_count() <= 0:
+            print("[]")
+        result = ""
+        for i in range(0, len(self._columns[0].data)):
+            data = ""
+            for column in self._columns:
+                data += str(column.data[i]) + " "
+            result += data.strip() + " "
+        print(result.strip())
+
     def has_references(self):
         """
-        Returns True if the table has a column that reference another table
+        Finds if this table references another table
+
+        Return:
+            True iff the the table references another table otherwise False
         """
         return any(x for x in self._columns if x.reference is not None)
 
     def add_column(self, column):
         """
         Adds a column to the table
+
+        Args:
+            column: the column to be added
         """
         self._columns.append(column)
         self.column_map[column.name] = column
@@ -60,17 +83,17 @@ class Table:
             return False
         for row in rows:
             for i, column in enumerate(row):
-                self._columns[i].append(column)
+                self._columns[i].data.append(column)
         return True
 
 
 class Column:
-    def __init__(self, name, data_type, key=False, reference=None, rows=None):
+    def __init__(self, name, data_type, key=False, reference=None):
         self.name = name
         self.data_type = data_type
         self.key = key
         self.reference = reference
-        self.rows = list(rows) if rows is not None else []
+        self.data = []
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
@@ -93,8 +116,3 @@ class Column:
 
     def __str__(self):
         return self.__str__()
-
-
-class Row:
-    def __init__(self, data):
-        self.data = list(data)

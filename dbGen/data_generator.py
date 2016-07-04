@@ -12,8 +12,9 @@ def generate(table, count=100):
     keys = [x.key for x in columns]
     references = [x.reference for x in columns]
     results = []
+    result = []
     for i in range(0, count):
-        result = []
+        result.clear()
         for j in range(len(columns)):
             if type(types[j]) == t.DataListIntType:
                 result.append(i)
