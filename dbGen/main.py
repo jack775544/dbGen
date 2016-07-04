@@ -9,13 +9,13 @@ movies = g.Table("movies")
 c1 = g.Column("id", "integer", True)
 c2 = g.Column("name", "String")
 
-movies.append(c1)
-movies.append(c2)
+movies.add_column(c1)
+movies.add_column(c2)
 
 print(movies.has_references())
 
 c3 = g.Column("company_id", "integer", False, companies.column_map["id"])
-movies.append(c3)
+movies.add_column(c3)
 
 print(movies.has_references())
 
@@ -24,4 +24,5 @@ schema = g.Schema([movies, companies])
 print(schema)
 print(schema.get_independent_tables())
 
-print(dg.generate(companies))
+(dg.generate(companies))
+

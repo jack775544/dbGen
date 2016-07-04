@@ -11,10 +11,10 @@ class Schema:
     def __str__(self):
         return self.__repr__()
 
-    '''
-    Gets all tables that do not reference any other table
-    '''
     def get_independent_tables(self):
+        """
+        Gets all tables that do not reference any other table
+        """
         return [x for x in self.tables if x.has_references() == False]
 
 
@@ -30,18 +30,38 @@ class Table:
     def __str__(self):
         return self.__repr__()
 
-    '''
-    Returns True if the table has a column that reference another table
-    '''
     def has_references(self):
+        """
+        Returns True if the table has a column that reference another table
+        """
         return any(x for x in self._columns if x.reference is not None)
 
-    '''
-    Appends a column to the table
-    '''
-    def append(self, column):
+    def add_column(self, column):
+        """
+        Adds a column to the table
+        """
         self._columns.append(column)
         self.column_map[column.name] = column
+
+    def add_data(self, rows):
+        """
+        Adds given rows to the table
+
+        Args:
+            rows: a list in the form[(item1 ... itemN)]
+        Return:
+            True iff the operation succeeded otherwise False
+        Will fail if the number of rows in the provided data != number of rows in the table
+        """
+        if len(rows) <= 0:
+            # Well we did succeed at adding nothing
+            return True
+        if len(rows[0]) != len(self.column_map):
+            return False
+        for row in rows:
+            for i, column in enumerate(row):
+                self._columns[i].append(column)
+        return True
 
 
 class Column:
@@ -73,9 +93,6 @@ class Column:
 
     def __str__(self):
         return self.__str__()
-
-    def append(self, row):
-        return self.rows.append(row)
 
 
 class Row:
