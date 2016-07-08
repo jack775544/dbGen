@@ -1,10 +1,9 @@
-from dbGen import types as t
-
-
 def generate(table, count=100):
     """
-    Generates random data for the table. If this table has a reference to another table in it then the other table is
-    expected to already have data in it. This method will not work on tables that reference themselves
+    Generates the random data for a table
+    :param table: The table to generate the random data for
+    :param count: The number of data in the table
+    :return: The result set that can be appended to the table
     """
     # name, data_type, key=False, reference=None, rows=None
     columns = table.column_map.values()
@@ -13,12 +12,10 @@ def generate(table, count=100):
     references = [x.reference for x in columns]
     results = []
     result = []
-    for i in range(0, count):
+    for row in range(0, count):
         result.clear()
-        for j in range(len(columns)):
-            if type(types[j]) == t.DataListIntType:
-                result.append(i)
-            else:
-                result.append("hello")
+        for column in range(len(columns)):
+            data_type = types[column]
+            result.append(next(data_type))
         results.append(tuple(result))
     return results

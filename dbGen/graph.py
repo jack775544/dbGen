@@ -14,6 +14,7 @@ class Schema:
     def get_independent_tables(self):
         """
         Gets all tables that do not reference any other table
+        :return: A list of tables in the schema that do not reference another table
         """
         return [x for x in self.tables if x.has_references() == False]
 
@@ -36,6 +37,7 @@ class Table:
     def print_data(self):
         """
         Prints the data stored in the table
+        :return: None
         """
         if self.column_count() <= 0:
             print("[]")
@@ -50,18 +52,15 @@ class Table:
     def has_references(self):
         """
         Finds if this table references another table
-
-        Return:
-            True iff the the table references another table otherwise False
+        :return: True iff the the table references another table otherwise False
         """
         return any(x for x in self._columns if x.reference is not None)
 
     def add_column(self, column):
         """
         Adds a column to the table
-
-        Args:
-            column: the column to be added
+        :param column: the column to be added
+        :return: None
         """
         self._columns.append(column)
         self.column_map[column.name] = column
@@ -69,12 +68,9 @@ class Table:
     def add_data(self, rows):
         """
         Adds given rows to the table
-
-        Args:
-            rows: a list in the form[(item1 ... itemN)]
-        Return:
-            True iff the operation succeeded otherwise False
         Will fail if the number of rows in the provided data != number of rows in the table
+        :param rows: a list in the form[(item1 ... itemN)]
+        :return: True iff the operation succeeded otherwise False
         """
         if len(rows) <= 0:
             # Well we did succeed at adding nothing
