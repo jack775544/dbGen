@@ -1,2 +1,3 @@
 *.iml
 dbGen/__pycache__/
+/.vscode
