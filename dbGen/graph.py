@@ -18,12 +18,26 @@ class Schema:
         """
         return [x for x in self.tables if x.has_references() == False]
 
+    def get_candidate_tables(self):
+        results = []
+        for table in self.tables:
+            if not table.has_references() and not table.has_data:
+                results.append(table)
+                continue
+            if table.has_references():
+                references = table.get_references()
+                candidate = all(references.has_data)
+                if candidate:
+                    results.append(table)
+                continue
+
 
 class Table:
     def __init__(self, table_name, columns=None):
         self.tableName = table_name
         self._columns = list(columns) if columns is not None else []
         self.column_map = OrderedDict((a.name, a) for a in self._columns)
+        self.has_data = False
 
     def __repr__(self):
         return self.tableName + " table"
@@ -41,13 +55,15 @@ class Table:
         """
         if self.column_count() <= 0:
             print("[]")
+            return
         result = ""
+        # print(self._columns[0].data)
         for i in range(0, len(self._columns[0].data)):
             data = ""
             for column in self._columns:
                 data += str(column.data[i]) + " "
-            result += data.strip() + " "
-        print(result.strip())
+            result += data.strip() + ", "
+        print(result.strip(", ") if result.strip() != "" else "Empty Table")
 
     def has_references(self):
         """
@@ -55,6 +71,13 @@ class Table:
         :return: True iff the the table references another table otherwise False
         """
         return any(x for x in self._columns if x.reference is not None)
+
+    def get_references(self):
+        results = []
+        for column in self._columns:
+            if column.reference is not None:
+                results.append(column.reference)
+        return results
 
     def add_column(self, column):
         """
@@ -80,14 +103,14 @@ class Table:
         for row in rows:
             for i, column in enumerate(row):
                 self._columns[i].data.append(column)
+        self.has_data = True
         return True
 
 
 class Column:
-    def __init__(self, name, data_type, key=False, reference=None):
+    def __init__(self, name, data_type, reference=None):
         self.name = name
         self.data_type = data_type
-        self.key = key
         self.reference = reference
         self.data = []
 
@@ -95,7 +118,6 @@ class Column:
         if isinstance(other, self.__class__):
             return self.name == other.name \
                    and self.data_type == other.data_type \
-                   and self.key == other.key \
                    and self.reference == other.reference
         elif isinstance(other, ''.__class__):
             return self.name == other
@@ -107,8 +129,7 @@ class Column:
     def __repr__(self):
         return self.name \
                + " is of type " + str(self.data_type) \
-               + ". Key status: " + str(self.key) \
                + ". References: " + str(self.reference)
 
     def __str__(self):
-        return self.__str__()
+        return self.__repr__()

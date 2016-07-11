@@ -5,17 +5,18 @@ def generate(table, count=100):
     :param count: The number of data in the table
     :return: The result set that can be appended to the table
     """
-    # name, data_type, key=False, reference=None, rows=None
-    columns = table.column_map.values()
+    # name, data_type, reference=None, rows=None
+    columns = table._columns
     types = [x.data_type for x in columns]
-    keys = [x.key for x in columns]
-    references = [x.reference for x in columns]
     results = []
     result = []
-    for row in range(0, count):
-        result.clear()
-        for column in range(len(columns)):
-            data_type = types[column]
+    for row_num in range(0, count):
+        for i in range(len(columns)):
+            if columns[i].reference:
+                result.append(columns[i].reference.data[row_num % len(columns[i].reference.data)])
+                continue
+            data_type = types[i]
             result.append(next(data_type))
         results.append(tuple(result))
+        result = []
     return results
