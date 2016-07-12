@@ -1,4 +1,6 @@
 import random
+import os
+import linecache
 
 
 class DataTypes:
@@ -60,7 +62,20 @@ class DataNameType(DataTypes):
         behaviour
         """
         DataTypes.__init__(self)
-        self.names = names
+        self._names = names
+        self._male_file = os.path.join('dbGen', 'nouns', 'malefirst.txt')
+        self._female_file = os.path.join('dbGen', 'nouns', 'femalefirst.txt')
+        self._last_file = os.path.join('dbGen', 'nouns', 'lastname.txt')        
+        self._male_count = sum(1 for line in open(self._male_file, 'r'))
+        self._female_count = sum(1 for line in open(self._female_file, 'r'))
+        self._last_count = sum(1 for line in open(self._last_file, 'r'))
 
     def __next__(self):
-        return "WORDS"
+        gender_file, gender_count = (self._male_file, self._male_count) if random.random() < 0.5 else (self._female_file, self._female_count)
+        if self._names == 0:
+            return linecache.getline(gender_file, random.randint(1, gender_count)).strip()
+        elif self._names == 1:
+            return linecache.getline(self._last_file, random.randint(1, self._last_count)).strip()
+        elif self._names == 2:
+            return linecache.getline(gender_file, random.randint(1, gender_count)).strip() + \
+                " " + linecache.getline(self._last_file, random.randint(1, self._last_count)).strip()
