@@ -11,33 +11,41 @@ class Schema:
     def __str__(self):
         return self.__repr__()
 
+    def __iter__(self):
+        return iter(self.tables)
+
+    def __len__(self):
+        return len(self.tables)
+
     def get_independent_tables(self):
         """
         Gets all tables that do not reference any other table
         :return: A list of tables in the schema that do not reference another table
         """
-        return [x for x in self.tables if x.has_references() == False]
+        return [x for x in self.tables if x.has_references() is False]
 
     def get_candidate_tables(self):
         results = []
         for table in self.tables:
-            if not table.has_references() and not table.has_data:
+            if table.has_references() is False and table.has_data is False:
                 results.append(table)
                 continue
-            if table.has_references():
-                references = table.get_references()
-                candidate = all(references.has_data)
+            if table.has_references() and table.has_data is not True:
+                references = table.get_referenced_tables()
+                candidate = all(x.has_data for x in references)
                 if candidate:
                     results.append(table)
                 continue
+        return results
 
 
 class Table:
-    def __init__(self, table_name, columns=None):
+    def __init__(self, table_name, columns=None, length=100):
         self.tableName = table_name
         self._columns = list(columns) if columns is not None else []
         self.column_map = OrderedDict((a.name, a) for a in self._columns)
         self.has_data = False
+        self.length = length
 
     def __repr__(self):
         return self.tableName + " table"
@@ -57,7 +65,6 @@ class Table:
             print("[]")
             return
         result = ""
-        # print(self._columns[0].data)
         for i in range(0, len(self._columns[0].data)):
             data = ""
             for column in self._columns:
@@ -70,13 +77,20 @@ class Table:
         Finds if this table references another table
         :return: True iff the the table references another table otherwise False
         """
-        return any(x for x in self._columns if x.reference is not None)
+        return any(x for x in self._columns if x.reference_column is not None)
 
-    def get_references(self):
+    def get_referenced_columns(self):
         results = []
         for column in self._columns:
-            if column.reference is not None:
-                results.append(column.reference)
+            if column.reference_column is not None:
+                results.append(column.reference_column)
+        return results
+
+    def get_referenced_tables(self):
+        results = []
+        for column in self._columns:
+            if column.reference_table is not None:
+                results.append(column.reference_table)
         return results
 
     def add_column(self, column):
@@ -108,17 +122,18 @@ class Table:
 
 
 class Column:
-    def __init__(self, name, data_type, reference=None):
+    def __init__(self, name, data_type, reference_table=None, reference_column=None):
         self.name = name
         self.data_type = data_type
-        self.reference = reference
+        self.reference_column = reference_column
+        self.reference_table = reference_table
         self.data = []
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
             return self.name == other.name \
                    and self.data_type == other.data_type \
-                   and self.reference == other.reference
+                   and self.reference_column == other.reference_column
         elif isinstance(other, ''.__class__):
             return self.name == other
         return False
@@ -129,7 +144,7 @@ class Column:
     def __repr__(self):
         return self.name \
                + " is of type " + str(self.data_type) \
-               + ". References: " + str(self.reference)
+               + ". References: " + str(self.reference_column)
 
     def __str__(self):
         return self.__repr__()
