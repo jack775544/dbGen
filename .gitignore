@@ -1,3 +1,6 @@
 *.iml
 dbGen/__pycache__/
 /.vscode
+/.idea
+/dist
+/__pycache__
