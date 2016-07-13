@@ -1,9 +1,12 @@
-from dbGen import graph
-
-
 def create(schema):
+    """
+    Creates the data for a database schema
+    :param schema: 
+    :return:
+    """
     data = schema.get_candidate_tables()
     while len(data):
+        # Pop a table off the list and generate the data for it. Then regenerate the list
         table = data.pop()
         table.add_data(generate(table))
         data = schema.get_candidate_tables()
