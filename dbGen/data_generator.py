@@ -18,7 +18,6 @@ def generate(table):
     :param table: The table to generate the random data for
     :return: The result set that can be appended to the table
     """
-    # name, data_type, reference=None, rows=None
     columns = table._columns
     types = [x.data_type for x in columns]
     results = []
