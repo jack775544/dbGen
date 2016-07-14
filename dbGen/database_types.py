@@ -73,9 +73,9 @@ class DataNameType(DataTypes):
     def __next__(self):
         gender_file, gender_count = (self._male_file, self._male_count) if random.random() < 0.5 else (self._female_file, self._female_count)
         if self._names == 0:
-            return linecache.getline(gender_file, random.randint(1, gender_count)).strip()
+            return linecache.getline(gender_file, random.randint(1, gender_count)).strip().title()
         elif self._names == 1:
-            return linecache.getline(self._last_file, random.randint(1, self._last_count)).strip()
+            return linecache.getline(self._last_file, random.randint(1, self._last_count)).strip().title()
         elif self._names == 2:
-            return linecache.getline(gender_file, random.randint(1, gender_count)).strip() + \
-                " " + linecache.getline(self._last_file, random.randint(1, self._last_count)).strip()
+            return linecache.getline(gender_file, random.randint(1, gender_count)).strip().title() + \
+                " " + linecache.getline(self._last_file, random.randint(1, self._last_count)).strip().title()

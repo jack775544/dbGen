@@ -40,7 +40,7 @@ class Schema:
 
 
 class Table:
-    def __init__(self, table_name, columns=None, length=100):
+    def __init__(self, table_name, length=100, columns=None):
         self.tableName = table_name
         self._columns = list(columns) if columns is not None else []
         self.column_map = OrderedDict((a.name, a) for a in self._columns)
