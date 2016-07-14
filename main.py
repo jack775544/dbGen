@@ -8,6 +8,8 @@ import linecache
 class BirdType(t.DataTypes):
     """
     A simple data type for bird names
+    All custom data types inherit from database_types.DataTypes, note that database_types is aliased to t in this case
+    It needs an __init__ and __next__ method to work with the generator
     """
     def __init__(self):
         """

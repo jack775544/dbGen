@@ -23,6 +23,9 @@ class DataTypes:
 
 
 class DataIntType(DataTypes):
+    """
+    A data type that will generate random integers between lower and upper - 1
+    """
     def __init__(self, lower, upper):
         DataTypes.__init__(self)
         self.lower = lower
@@ -33,6 +36,9 @@ class DataIntType(DataTypes):
 
 
 class DataListIntType(DataTypes):
+    """
+    A data type that will generate a sequential list of numbers. This is most commonly used for primary keys
+    """
     def __init__(self, lower=1, step=1):
         DataTypes.__init__(self)
         self.lower = lower
@@ -46,6 +52,9 @@ class DataListIntType(DataTypes):
 
 
 class DataRealType(DataTypes):
+    """
+    A data type that will generate a random real number between upper and lower with a set precision
+    """
     def __init__(self, lower, upper, precision=2):
         DataTypes.__init__(self)
         self.lower = lower
@@ -75,7 +84,8 @@ class DataNameType(DataTypes):
         self._last_count = sum(1 for line in open(self._last_file, 'r'))
 
     def __next__(self):
-        gender_file, gender_count = (self._male_file, self._male_count) if random.random() < 0.5 else (self._female_file, self._female_count)
+        gender_file, gender_count = (self._male_file, self._male_count) if random.random() < 0.5 \
+            else (self._female_file, self._female_count)
         if self._names == 0:
             return linecache.getline(gender_file, random.randint(1, gender_count)).strip().title()
         elif self._names == 1:
