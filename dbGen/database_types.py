@@ -5,6 +5,8 @@ import linecache
 
 class DataTypes:
     def __init__(self):
+        self.opener = ""
+        self.closer = ""
         return
 
     def __repr__(self):
@@ -62,6 +64,8 @@ class DataNameType(DataTypes):
         behaviour
         """
         DataTypes.__init__(self)
+        self.opener = "'"
+        self.closer = "'"
         self._names = names
         self._male_file = os.path.join('dbGen', 'nouns', 'malefirst.txt')
         self._female_file = os.path.join('dbGen', 'nouns', 'femalefirst.txt')

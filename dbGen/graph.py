@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from dbGen import database_types as t
 
 
 class Schema:
@@ -41,14 +42,14 @@ class Schema:
 
 class Table:
     def __init__(self, table_name, length=100, columns=None):
-        self.tableName = table_name
+        self.table_name = table_name
         self._columns = list(columns) if columns is not None else []
         self.column_map = OrderedDict((a.name, a) for a in self._columns)
         self.has_data = False
         self.length = length
 
     def __repr__(self):
-        return self.tableName + " table"
+        return self.table_name + " table"
 
     def __str__(self):
         return self.__repr__()
@@ -71,6 +72,27 @@ class Table:
                 data += str(column.data[i]) + " "
             result += data.strip() + ", "
         print(result.strip(", ") if result.strip() != "" else "Empty Table")
+
+    def get_csv(self):
+        """
+        Gets a csv representation of each row in the table
+        :return: A list of comma separated values, with each item in the list representing a row in the table
+        """
+        if self.column_count() <= 0:
+            return []
+        result = []
+        for i in range(0, len(self._columns[0].data)):
+            data = ""
+            for column in self._columns:
+                data += column.data_type.opener + str(column.data[i]).replace("'", "") + column.data_type.closer + ", "
+            result.append(data.strip(", "))
+        return result
+
+    def get_sql_insert_statements(self):
+        statements = ""
+        for line in self.get_csv():
+            statements += "INSERT INTO " + self.table_name + " VALUES (" + line + ");\n"
+        return statements.strip()
 
     def has_references(self):
         """
@@ -124,7 +146,7 @@ class Table:
 class Column:
     def __init__(self, name, data_type, reference_table=None, reference_column=None):
         self.name = name
-        self.data_type = data_type
+        self.data_type = data_type if data_type is not None else t.DataTypes()
         self.reference_column = reference_column
         self.reference_table = reference_table
         self.data = []

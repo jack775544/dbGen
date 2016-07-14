@@ -4,3 +4,4 @@ dbGen/__pycache__/
 /.idea
 /dist
 /__pycache__
+*.sql

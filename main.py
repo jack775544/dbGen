@@ -14,6 +14,10 @@ class BirdType(t.DataTypes):
         Initialises the bird class and instantiates any properties needed
         """
         t.DataTypes.__init__(self)
+        # Since this is a string it needs to be surrounds by single quotation marks
+        # If this is not filled then the default is to not surround it by anything
+        self.opener = "'"
+        self.closer = "'"
         self._bird_file = os.path.join('words', 'birds.txt')
         self._bird_count = sum(1 for line in open(self._bird_file, 'r'))
         self._n = 1
@@ -46,12 +50,15 @@ sightings = g.Table("sightings", 100)
 # A column that is a reference to another does not need a data type
 s1 = g.Column("person_id", None, people, people.column_map["person_id"])
 s2 = g.Column("bird_id", None, birds, birds.column_map["bird_id"])
-s3 = g.Column("lat", t.DataRealType(-31, -25.2, 2))
-s4 = g.Column("long", t.DataRealType(150, 152.5, 2))
+s3 = g.Column("latitude", t.DataRealType(-31, -25.2, 2))
+s4 = g.Column("longitude", t.DataRealType(150, 152.5, 2))
+# We use unix time here
+s5 = g.Column("epoch_time", t.DataIntType(1451606400, 1467331200))
 sightings.add_column(s1)
 sightings.add_column(s2)
 sightings.add_column(s3)
 sightings.add_column(s4)
+sightings.add_column(s5)
 
 # Create the database schema object
 schema = g.Schema([birds, people, sightings])
@@ -59,4 +66,4 @@ schema = g.Schema([birds, people, sightings])
 # Create the data
 dg.create(schema)
 for table in schema:
-    table.print_data()
+    print(table.get_sql_insert_statements())
