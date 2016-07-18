@@ -32,7 +32,7 @@ def generate(table):
                 if columns[i].rand_val is False:
                     result.append(columns[i].reference_column.data[row_num % len(columns[i].reference_column.data)])
                 else:
-                    result.append(columns[i].reference_column.data[random.randint(0, row_num % len(columns[i].reference_column.data))])
+                    result.append(columns[i].reference_column.data[random.randint(0, len(columns[i].reference_column.data) - 1)])
                 continue
             data_type = types[i]
             result.append(next(data_type))
