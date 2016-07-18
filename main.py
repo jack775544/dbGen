@@ -35,21 +35,21 @@ def main():
             self._n += 1
             return val
 
-    # Create the birds table, this will have 29 members in it
+    # Create the birds table, this will have 251 members in it
     birds = g.Table("birds", 251)
     b1 = g.Column("bird_id", t.DataListIntType())
     b2 = g.Column("bird_name", BirdType())
     birds.add_column(b1)
     birds.add_column(b2)
 
-    # Initialise the people table, it will have 7 members
-    people = g.Table("people", 43)
+    # Initialise the people table, it will have 498 members
+    people = g.Table("people", 498)
     p1 = g.Column("person_id", t.DataListIntType())
     p2 = g.Column("person_name", t.DataNameType())
     people.add_column(p1)
     people.add_column(p2)
 
-    # Initialise the sightings table, it will have 100 members
+    # Initialise the sightings table, it will have 5132 members
     sightings = g.Table("sightings", 5132)
     # A column that is a reference to another does not need a data type
     s1 = g.Column("person_id", None, people, people.column_map["person_id"], True)
