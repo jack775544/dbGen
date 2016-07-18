@@ -144,12 +144,13 @@ class Table:
 
 
 class Column:
-    def __init__(self, name, data_type, reference_table=None, reference_column=None):
+    def __init__(self, name, data_type, reference_table=None, reference_column=None, rand_val=False):
         self.name = name
         self.data_type = data_type if data_type is not None else t.DataTypes()
         self.reference_column = reference_column
         self.reference_table = reference_table
         self.data = []
+        self.rand_val = rand_val
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):

@@ -1,3 +1,6 @@
+import random
+
+
 def create(schema):
     """
     Creates the data for a database schema
@@ -26,7 +29,10 @@ def generate(table):
     for row_num in range(0, count):
         for i in range(len(columns)):
             if columns[i].reference_column:
-                result.append(columns[i].reference_column.data[row_num % len(columns[i].reference_column.data)])
+                if columns[i].rand_val is False:
+                    result.append(columns[i].reference_column.data[row_num % len(columns[i].reference_column.data)])
+                else:
+                    result.append(columns[i].reference_column.data[random.randint(0, row_num % len(columns[i].reference_column.data))])
                 continue
             data_type = types[i]
             result.append(next(data_type))

@@ -50,12 +50,13 @@ people.add_column(p2)
 # Initialise the sightings table, it will have 100 members
 sightings = g.Table("sightings", 100)
 # A column that is a reference to another does not need a data type
-s1 = g.Column("person_id", None, people, people.column_map["person_id"])
-s2 = g.Column("bird_id", None, birds, birds.column_map["bird_id"])
+s1 = g.Column("person_id", None, people, people.column_map["person_id"], True)
+s2 = g.Column("bird_id", None, birds, birds.column_map["bird_id"], True)
 s3 = g.Column("latitude", t.DataRealType(-31, -25.2, 2))
 s4 = g.Column("longitude", t.DataRealType(150, 152.5, 2))
 # We use unix time here
 s5 = g.Column("epoch_time", t.DataIntType(1451606400, 1467331200))
+sightings.add_column(g.Column("sighting_id", t.DataListIntType()))
 sightings.add_column(s1)
 sightings.add_column(s2)
 sightings.add_column(s3)
@@ -63,6 +64,7 @@ sightings.add_column(s4)
 sightings.add_column(s5)
 
 # Create the database schema object
+# The order of the list will be the order that the SQL statements are printed so make sure they are in a working order
 schema = g.Schema([birds, people, sightings])
 
 # Create the data
