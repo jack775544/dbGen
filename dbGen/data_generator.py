@@ -8,11 +8,16 @@ def create(schema):
     :return:
     """
     data = schema.get_candidate_tables()
+    temp = []
     while len(data):
         # Pop a table off the list and generate the data for it. Then regenerate the list
         table = data.pop()
         table.add_data(generate(table))
+        schema.tables.remove(table)
+        temp.append(table)
         data = schema.get_candidate_tables()
+    temp.extend(schema.tables)
+    schema.tables = temp
 
 
 def generate(table):

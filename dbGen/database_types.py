@@ -1,6 +1,7 @@
 import random
 import os
 import linecache
+import datetime
 
 
 class DataTypes:
@@ -93,3 +94,28 @@ class DataNameType(DataTypes):
         elif self._names == 2:
             return linecache.getline(gender_file, random.randint(1, gender_count)).strip().title() + \
                 " " + linecache.getline(self._last_file, random.randint(1, self._last_count)).strip().title()
+
+
+class DataDateType(DataTypes):
+    def __init__(self, start, end):
+        """
+        A data type class for generating dates
+
+        :param start: A string representing the starting date
+        :param end: A string representing the ending date, this must be greater than start
+
+        The date format for this function is DD-MM-YYYY where all values are integers.
+        For example, for the 19 January 2012 the format will be '19-01-2012'
+        """
+        DataTypes.__init__(self)
+        self.opener = "'"
+        self.closer = "'"
+        self._month_file = os.path.join('dbGen', 'nouns', 'months.txt')
+        self._start_year, self._start_month, self._start_day = map(int, start.split('-'))
+        self._end_year, self._end_month, self._end_day = map(int, end.split('-'))
+        self._start_stamp = int(datetime.datetime(self._start_year, self._start_month, self._start_day, 0, 0).timestamp())
+        self._end_stamp = int(datetime.datetime(self._end_year, self._end_month, self._end_day, 23, 59).timestamp())
+
+    def __next__(self):
+        date = datetime.datetime.fromtimestamp(random.randint(self._start_stamp, self._end_stamp))
+        return str(date.day) + '-' + linecache.getline(self._month_file, date.month).strip() + '-' + str(date.year)

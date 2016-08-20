@@ -7,7 +7,10 @@ Installation
 - Clone the repository
 - Done!
 
-There are no dependencies in this project  and it has only been tested on Python 3.5 for Windows.
+There are no dependencies in this project.
+
+This has been tested mainly on Python 3.5 for Windows however cursory testing on Python 3.4 for Ubuntu seems to be
+successful.
 
 Usage
 ---

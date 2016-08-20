@@ -5,3 +5,4 @@ dbGen/__pycache__/
 /dist
 /__pycache__
 *.sql
+*.swp
