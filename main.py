@@ -40,6 +40,7 @@ def main():
             t.DataTypes.__init__(self)
             self.opener = "'"
             self.closer = "'"
+            self.database_type = "VARCHAR2(70)"
             self._company_file = os.path.join('words', 'companies.txt')
             self._n = 1
 
@@ -94,6 +95,9 @@ def main():
 
     # Create the data
     dg.create(schema)
+
+    for table in schema:
+        print(table.get_create_table_statement())
     for table in schema:
         print(table.get_sql_insert_statements())
 

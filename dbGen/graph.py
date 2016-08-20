@@ -94,6 +94,14 @@ class Table:
             statements += "INSERT INTO " + self.table_name + " VALUES (" + line + ");\n"
         return statements.strip()
 
+    def get_create_table_statement(self):
+        statement = "CREATE TABLE " + self.table_name + "(\n"
+        for column in self._columns:
+            statement += "    " + column.name + " " + column.data_type.database_type + ",\n"
+        statement = statement.strip(",\n")
+        statement += "\n);\n"
+        return statement
+
     def has_references(self):
         """
         Finds if this table references another table

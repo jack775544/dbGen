@@ -8,6 +8,7 @@ class DataTypes:
     def __init__(self):
         self.opener = ""
         self.closer = ""
+        self.database_type = 'VARCHAR2(50)'
         return
 
     def __repr__(self):
@@ -27,10 +28,11 @@ class DataIntType(DataTypes):
     """
     A data type that will generate random integers between lower and upper - 1
     """
-    def __init__(self, lower, upper):
+    def __init__(self, lower, upper, data_type=None):
         DataTypes.__init__(self)
         self.lower = lower
         self.upper = upper
+        self.database_type = data_type if data_type is not None else "NUMBER"
 
     def __next__(self):
         return random.randint(self.lower, self.upper-1)
@@ -40,11 +42,12 @@ class DataListIntType(DataTypes):
     """
     A data type that will generate a sequential list of numbers. This is most commonly used for primary keys
     """
-    def __init__(self, lower=1, step=1):
+    def __init__(self, lower=1, step=1, data_type=None):
         DataTypes.__init__(self)
         self.lower = lower
         self._step = step
         self._n = lower
+        self.database_type = data_type if data_type is not None else 'NUMBER'
 
     def __next__(self):
         n = self._n
@@ -56,18 +59,19 @@ class DataRealType(DataTypes):
     """
     A data type that will generate a random real number between upper and lower with a set precision
     """
-    def __init__(self, lower, upper, precision=2):
+    def __init__(self, lower, upper, precision=2, data_type=None):
         DataTypes.__init__(self)
         self.lower = lower
         self.upper = upper
         self.decimals = precision
+        self.database_type = data_type if data_type is not None else "NUMBER"
 
     def __next__(self):
         return "{0:.2f}".format(random.uniform(self.lower, self.upper))
 
 
 class DataNameType(DataTypes):
-    def __init__(self, names=2):
+    def __init__(self, names=2, data_type=None):
         """
         A data type class for generating names
         :param names: 0 if first name only, 1 if last name only, 2 for first and last name, otherwise undefined
@@ -76,6 +80,7 @@ class DataNameType(DataTypes):
         DataTypes.__init__(self)
         self.opener = "'"
         self.closer = "'"
+        self.database_type = data_type if data_type is not None else "VARCHAR2(50)"
         self._names = names
         self._male_file = os.path.join('dbGen', 'nouns', 'malefirst.txt')
         self._female_file = os.path.join('dbGen', 'nouns', 'femalefirst.txt')
@@ -97,7 +102,7 @@ class DataNameType(DataTypes):
 
 
 class DataDateType(DataTypes):
-    def __init__(self, start, end):
+    def __init__(self, start, end, data_type=None):
         """
         A data type class for generating dates
 
@@ -110,6 +115,7 @@ class DataDateType(DataTypes):
         DataTypes.__init__(self)
         self.opener = "'"
         self.closer = "'"
+        self.database_type = data_type if data_type is not None else "DATE"
         self._month_file = os.path.join('dbGen', 'nouns', 'months.txt')
         self._start_year, self._start_month, self._start_day = map(int, start.split('-'))
         self._end_year, self._end_month, self._end_day = map(int, end.split('-'))
