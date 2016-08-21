@@ -51,21 +51,21 @@ def main():
 
     # Create the birds table, this will have 4472 members in it
     birds = g.Table("birds", 4472)
-    b1 = g.Column("bird_id", t.DataListIntType())
+    b1 = g.Column("bird_id", t.DataListIntType(), primary_key=True)
     b2 = g.Column("bird_name", BirdType())
     birds.add_column(b1)
     birds.add_column(b2)
 
     # Initialise the organisations table, it will have 8 members
     organisations = g.Table("organisations", 8)
-    c1 = g.Column("company_id", t.DataListIntType())
+    c1 = g.Column("company_id", t.DataListIntType(), primary_key=True)
     c2 = g.Column("company_name", CompanyNamesType())
     organisations.add_column(c1)
     organisations.add_column(c2)
 
     # Initialise the people table, it will have 5132 members
     people = g.Table("people", 5132)
-    p1 = g.Column("person_id", t.DataListIntType())
+    p1 = g.Column("person_id", t.DataListIntType(), primary_key=True)
     p2 = g.Column("person_name", t.DataNameType())
     p3 = g.Column("date_of_birth", t.DataDateType('1970-01-02', '1995-12-31'))
     p4 = g.Column("company_id", None, organisations, organisations.column_map["company_id"], True)
@@ -77,7 +77,7 @@ def main():
     # Initialise the sightings table, it will have 267941 members
     sightings = g.Table("sightings", 267941)
     # A column that is a reference to another does not need a data type
-    s1 = g.Column("sighting_id", t.DataListIntType())
+    s1 = g.Column("sighting_id", t.DataListIntType(), primary_key=True)
     s2 = g.Column("person_id", None, people, people.column_map["person_id"], True)
     s3 = g.Column("bird_id", None, birds, birds.column_map["bird_id"], True)
     s4 = g.Column("latitude", t.DataRealType(-31, -25.2, 2))
@@ -97,7 +97,7 @@ def main():
     dg.create(schema)
 
     for table in schema:
-        print(table.get_create_table_statement())
+        print(table.get_create_table_statement(True))
     for table in schema:
         print(table.get_sql_insert_statements())
 

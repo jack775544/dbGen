@@ -94,12 +94,41 @@ class Table:
             statements += "INSERT INTO " + self.table_name + " VALUES (" + line + ");\n"
         return statements.strip()
 
-    def get_create_table_statement(self):
+    def get_create_table_statement(self, reference_statements=False):
+        references = []
+        keys = []
+        uniques = []
+        not_nulls = []
         statement = "CREATE TABLE " + self.table_name + "(\n"
         for column in self._columns:
             statement += "    " + column.name + " " + column.data_type.database_type + ",\n"
+            if column.reference_table is not None:
+                references.append(column)
+            if column.primary_key is not False:
+                keys.append(column)
+            if column.unique is not False:
+                uniques.append(column)
+            if column.not_null is not False:
+                not_nulls.append(column)
         statement = statement.strip(",\n")
         statement += "\n);\n"
+        if reference_statements is not False:
+            for column in keys:
+                statement += "ALTER TABLE " + self.table_name + "\n"
+                statement += "ADD CONSTRAINT PK_" + column.name + "\n"
+                statement += "PRIMARY KEY (" + column.name + ");\n"
+            for column in uniques:
+                statement += "ALTER TABLE " + self.table_name + "\n"
+                statement += "ADD CONSTRAINT UN_" + column.name + "\n"
+                statement += "UNIQUE (" + column.name + ");\n"
+            for column in not_nulls:
+                statement += "ALTER TABLE " + self.table_name + "\n"
+                statement += "ADD CONSTRAINT NN_" + column.name + "\n"
+                statement += "CHECK (" + column.name + " IS NOT NULL);\n"
+            for column in references:
+                statement += "ALTER TABLE " + self.table_name + "\n"
+                statement += "ADD CONSTRAINT FK_" + column.name + "_TO_" + column.reference_column.name + "\n"
+                statement += "FOREIGN KEY (" + column.name + ") REFERENCES " + column.reference_table.table_name + " (" + column.reference_column.name + ");\n"
         return statement
 
     def has_references(self):
@@ -152,13 +181,21 @@ class Table:
 
 
 class Column:
-    def __init__(self, name, data_type, reference_table=None, reference_column=None, rand_val=False):
+    def __init__(self, name, data_type, reference_table=None, reference_column=None, rand_val=False, primary_key=False, unique=False, not_null=False):
         self.name = name
-        self.data_type = data_type if data_type is not None else t.DataTypes()
+        if reference_column is not None:
+            self.data_type = reference_column.data_type
+        elif data_type is not None:
+            self.data_type = data_type
+        else:
+            self.data_type = t.DataTypes()
         self.reference_column = reference_column
         self.reference_table = reference_table
         self.data = []
         self.rand_val = rand_val
+        self.primary_key = primary_key
+        self.unique = unique
+        self.not_null = not_null
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
