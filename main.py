@@ -41,34 +41,43 @@ def main():
             self.opener = "'"
             self.closer = "'"
             self.database_type = "VARCHAR2(70)"
-            self._company_file = os.path.join('words', 'companies.txt')
-            self._n = 1
+            self._names = [
+                "National Bird Spotting Association",
+                "Greenpeace",
+                "Department of Environmental Sciences",
+                "Royal Society for the Protection of Birds",
+                "Environmental Protection Agency",
+                "Highlands Bird Watching Society",
+                "Peoples Association for the Conservation of the Environment",
+                "Skynet"
+            ]
+            self._n = 0
 
         def __next__(self):
-            val = linecache.getline(self._company_file, self._n).strip()
+            val = self._names[self._n % len(self._names)]
             self._n += 1
             return val
 
     # Create the birds table, this will have 4472 members in it
     birds = g.Table("birds", 4472)
     b1 = g.Column("bird_id", t.DataListIntType(), primary_key=True)
-    b2 = g.Column("bird_name", BirdType())
+    b2 = g.Column("bird_name", BirdType(), not_null=True)
     birds.add_column(b1)
     birds.add_column(b2)
 
     # Initialise the organisations table, it will have 8 members
-    organisations = g.Table("organisations", 8)
-    c1 = g.Column("company_id", t.DataListIntType(), primary_key=True)
-    c2 = g.Column("company_name", CompanyNamesType())
+    organisations = g.Table("organisations", 14)
+    c1 = g.Column("organisation_id", t.DataListIntType(), primary_key=True)
+    c2 = g.Column("organisation_name", CompanyNamesType(), not_null=True)
     organisations.add_column(c1)
     organisations.add_column(c2)
 
     # Initialise the people table, it will have 5132 members
     people = g.Table("people", 5132)
     p1 = g.Column("person_id", t.DataListIntType(), primary_key=True)
-    p2 = g.Column("person_name", t.DataNameType())
+    p2 = g.Column("person_name", t.DataNameType(), not_null=True)
     p3 = g.Column("date_of_birth", t.DataDateType('1970-01-02', '1995-12-31'))
-    p4 = g.Column("company_id", None, organisations, organisations.column_map["company_id"], True)
+    p4 = g.Column("organisation_id", None, organisations, organisations.column_map["organisation_id"], True)
     people.add_column(p1)
     people.add_column(p2)
     people.add_column(p3)
