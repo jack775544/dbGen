@@ -1,4 +1,5 @@
 import random
+from collections import OrderedDict
 
 
 def create(schema):
@@ -29,18 +30,25 @@ def generate(table):
     columns = table._columns
     types = [x.data_type for x in columns]
     results = []
-    result = []
+    result = OrderedDict()
     count = table.length
     for row_num in range(0, count):
         for i in range(len(columns)):
             if columns[i].reference_column:
                 if columns[i].rand_val is False:
-                    result.append(columns[i].reference_column.data[row_num % len(columns[i].reference_column.data)])
+                    result[columns[i].name] = (columns[i].reference_column.data[row_num % len(columns[i].reference_column.data)])
                 else:
-                    result.append(columns[i].reference_column.data[random.randint(0, len(columns[i].reference_column.data) - 1)])
+                    result[columns[i].name] = (columns[i].reference_column.data[random.randint(0, len(columns[i].reference_column.data) - 1)])
                 continue
             data_type = types[i]
-            result.append(next(data_type))
-        results.append(tuple(result))
-        result = []
+            result[columns[i].name] = get_next_value(data_type, result)
+        results.append(tuple(result.values()))
+        result = OrderedDict()
     return results
+
+
+def get_next_value(data_type, values):
+    if data_type.next_function.__name__ == '__next__':
+        return data_type.next_function()
+    else:
+        return data_type.next_function(values)

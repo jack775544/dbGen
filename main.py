@@ -22,6 +22,7 @@ def main():
             # If this is not filled then the default is to not surround it by anything
             self.opener = "'"
             self.closer = "'"
+            self.database_type = 'VARCHAR2(50)'
             self._bird_file = os.path.join('words', 'birds.txt')
             self._n = 1
 
@@ -58,6 +59,32 @@ def main():
             self._n += 1
             return val
 
+    class DescriptionType(t.DataTypes):
+        def __init__(self):
+            t.DataTypes.__init__(self)
+            self.opener = "'"
+            self.closer = "'"
+            self.next_function = self._next_val
+            self.database_type = 'VARCHAR2(100)'
+
+        def _next_val(self, prior):
+            top_bound = -25.2
+            bottom_bound = -31
+            left_bound = 152.5
+            right_bound = 150
+            
+            if float(prior['latitude']) - ((top_bound + bottom_bound) / 2) > 0:
+                top = 'north'
+            else:
+                top = 'south'
+
+            if float(prior['longitude']) - ((left_bound + right_bound) / 2) > 0:
+                left = 'eastern'
+            else:
+                left = 'western'
+
+            return 'A bird was spotted in the ' + top + '-' + left + ' part of the area'
+
     # Create the birds table, this will have 4472 members in it
     birds = g.Table("birds", 4472)
     b1 = g.Column("bird_id", t.DataListIntType(), primary_key=True)
@@ -66,7 +93,7 @@ def main():
     birds.add_column(b2)
 
     # Initialise the organisations table, it will have 8 members
-    organisations = g.Table("organisations", 14)
+    organisations = g.Table("organisations", 8)
     c1 = g.Column("organisation_id", t.DataListIntType(), primary_key=True)
     c2 = g.Column("organisation_name", CompanyNamesType(), not_null=True)
     organisations.add_column(c1)
@@ -92,12 +119,14 @@ def main():
     s4 = g.Column("latitude", t.DataRealType(-31, -25.2, 2))
     s5 = g.Column("longitude", t.DataRealType(150, 152.5, 2))
     s6 = g.Column("sighting_date", t.DataDateType('2000-01-01', '2016-01-02'))
+    s7 = g.Column("description", DescriptionType())
     sightings.add_column(s1)
     sightings.add_column(s2)
     sightings.add_column(s3)
     sightings.add_column(s4)
     sightings.add_column(s5)
     sightings.add_column(s6)
+    sightings.add_column(s7)
 
     # Create the database schema object
     schema = g.Schema([birds, organisations, people, sightings])

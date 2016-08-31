@@ -6,8 +6,9 @@ import datetime
 
 class DataTypes:
     def __init__(self):
-        self.opener = ""
-        self.closer = ""
+        self.opener = "'"
+        self.closer = "'"
+        self.next_function = self.__next__
         self.database_type = 'VARCHAR2(50)'
         return
 
@@ -21,7 +22,7 @@ class DataTypes:
         return self
 
     def __next__(self):
-        return str(1)
+        return ''
 
 
 class DataIntType(DataTypes):
@@ -32,6 +33,8 @@ class DataIntType(DataTypes):
         DataTypes.__init__(self)
         self.lower = lower
         self.upper = upper
+        self.opener = ''
+        self.closer = ''
         self.database_type = data_type if data_type is not None else "NUMBER"
 
     def __next__(self):
@@ -47,6 +50,8 @@ class DataListIntType(DataTypes):
         self.lower = lower
         self._step = step
         self._n = lower
+        self.opener = ''
+        self.closer = ''
         self.database_type = data_type if data_type is not None else 'NUMBER'
 
     def __next__(self):
@@ -64,6 +69,8 @@ class DataRealType(DataTypes):
         self.lower = lower
         self.upper = upper
         self.decimals = precision
+        self.opener = ''
+        self.closer = ''
         self.database_type = data_type if data_type is not None else "NUMBER"
 
     def __next__(self):
