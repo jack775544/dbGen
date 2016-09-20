@@ -73,14 +73,20 @@ class Table:
             result += data.strip() + ", "
         print(result.strip(", ") if result.strip() != "" else "Empty Table")
 
-    def get_csv(self):
+    def get_csv(self, lazy=True):
         """
         Gets a csv representation of each row in the table
+        :param lazy: If True generates a lazy generator, otherwise it will generate a list
         :return: A list of comma separated values, with each item in the list representing a row in the table
         """
         if self.column_count() <= 0:
             return []
         result = []
+        if lazy:
+            return (', '.join([column.data_type.opener +
+                               str(column.data[i]).replace("'", "") +
+                               column.data_type.closer for column in self._columns]).strip(", ")
+                    for i in range(0, self.length))
         for i in range(0, len(self._columns[0].data)):
             data = ""
             for column in self._columns:
@@ -88,7 +94,9 @@ class Table:
             result.append(data.strip(", "))
         return result
 
-    def get_sql_insert_statements(self):
+    def get_sql_insert_statements(self, lazy=True):
+        if lazy:
+            return ("INSERT INTO " + self.table_name + " VALUES (" + line + ");\n" for line in self.get_csv())
         statements = ""
         for line in self.get_csv():
             statements += "INSERT INTO " + self.table_name + " VALUES (" + line + ");\n"

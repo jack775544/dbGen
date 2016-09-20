@@ -72,7 +72,7 @@ def main():
             bottom_bound = -31
             left_bound = 152.5
             right_bound = 150
-            
+
             if float(prior['latitude']) - ((top_bound + bottom_bound) / 2) > 0:
                 top = 'north'
             else:
@@ -137,7 +137,8 @@ def main():
     for table in schema:
         print(table.get_create_table_statement(True))
     for table in schema:
-        print(table.get_sql_insert_statements())
+        for data_row in table.get_sql_insert_statements():
+            print(data_row.strip())
 
 if __name__ == '__main__':
     main()
