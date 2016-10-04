@@ -32,22 +32,28 @@ def generate(table):
     results = []
     result = OrderedDict()
     count = table.length
+    # For each row we are generating
     for row_num in range(0, count):
+        # For each column in the row
         for i in range(len(columns)):
+            # Check if reference, if it is then get value from referenced table
             if columns[i].reference_column:
                 if columns[i].rand_val is False:
                     result[columns[i].name] = (columns[i].reference_column.data[row_num % len(columns[i].reference_column.data)])
                 else:
                     result[columns[i].name] = (columns[i].reference_column.data[random.randint(0, len(columns[i].reference_column.data) - 1)])
                 continue
+            # Get the next value if it is not a reference
             data_type = types[i]
             result[columns[i].name] = get_next_value(data_type, result)
+        # Add results back to table
         results.append(tuple(result.values()))
         result = OrderedDict()
     return results
 
 
 def get_next_value(data_type, values):
+    # This function is a horrible hack
     if data_type.next_function.__name__ == '__next__':
         return data_type.next_function()
     else:

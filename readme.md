@@ -1,50 +1,26 @@
 # dbGen
 A random data generator made for relational databases
 
-Installation
----
+## Installation
 - Install Python 3.5 for your platform
 - Clone the repository
 - Done!
 
 There are no dependencies in this project.
 
-This has been tested mainly on Python 3.5 for Windows however cursory testing on Python 3.4 for Ubuntu seems to be
-successful.
+This has been tested mainly on Python 3.5 for Ubuntu.
 
-Usage
----
+On Windows this will work in Python 3.5 for generating small datasets, 
+however will throw an error on larger ones for unknown reasons. 
+
+## Usage
 Run the following command
 
 	python main.py > out.sql
 
-Example
----
-The example code is documented and shows off all the built in data types and how to make a new custom data type. The
-test has the following schema:
+## Example
+main.py contains a fully worked example of how to create a new dataset using the built in and custom datatypes,
+as well as a an example of using prior generated values.
 
-	/* This is tested in Oracle XE 11g */
-
-	CREATE TABLE birds (
-		bird_id INTEGER PRIMARY KEY,
-		bird_name VARCHAR2(50)
-    );
-    
-    CREATE TABLE people (
-		person_id INTEGER PRIMARY KEY,
-		person_name VARCHAR2(30)
-    );
-    
-    CREATE TABLE sightings (
-    	sighting_id INTEGER PRIMARY KEY,
-    	person_id INTEGER,
-		bird_id INTEGER,
-		latitude REAL,
-		longitude REAL,
-		epoch_time INTEGER,
-		CONSTRAINT fk_person_id FOREIGN KEY (person_id) REFERENCES people(person_id),
-		CONSTRAINT fk_bird_id FOREIGN KEY (bird_id) REFERENCES birds(bird_id)
-    );
-
-dbGen will create a set of insert statements that will fit this schema once the data schema layout has been inserted
-into the program.
+dbGen will create a set of `CREATE TABLE`, `ADD CONSTRAINT` and `INSERT INTO` statements
+that fit to the schema that you provide. 
