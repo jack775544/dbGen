@@ -189,7 +189,7 @@ class Table:
 
 
 class Column:
-    def __init__(self, name, data_type, reference_table=None, reference_column=None, rand_val=False, primary_key=False, unique=False, not_null=False):
+    def __init__(self, name, data_type, reference_table=None, reference_column=None, rand_val=False, primary_key=False, unique=False, not_null=False, fn=lambda x: x):
         self.name = name
         if reference_column is not None:
             self.data_type = reference_column.data_type
@@ -204,6 +204,7 @@ class Column:
         self.primary_key = primary_key
         self.unique = unique
         self.not_null = not_null
+        self.fn = fn
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):

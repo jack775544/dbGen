@@ -45,7 +45,7 @@ def generate(table):
                 continue
             # Get the next value if it is not a reference
             data_type = types[i]
-            result[columns[i].name] = get_next_value(data_type, result)
+            result[columns[i].name] = columns[i].fn(get_next_value(data_type, result))
         # Add results back to table
         results.append(tuple(result.values()))
         result = OrderedDict()
